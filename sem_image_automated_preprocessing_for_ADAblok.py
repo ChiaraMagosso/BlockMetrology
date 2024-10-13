@@ -496,8 +496,13 @@ def main():
             pixel_FP.close()
 
             print("ADAblock analysis")
+            
+            # The ImageJ The software can be downloaded at https://imagej.net/ - We recommend version ImageJ 1.51w
+            # The medified script ADAblock.ijm can be found at https://github.com/ChiaraMagosso/ADAblock/blob/ijMacro_updates_only/ADAblock.ijm
+            # ADAblock was originally published by Murphy, J. N., Harris, K. D. & Buriak, J. M. Automated Defect and Correlation Length Analysis of Block Copolymer Thin Film Nanopatterns. PLOS ONE 10, e0133088 (2015) - https://doi.org/10.1371/journal.pone.0133088. Follow some of the instructions in the "S1 Instructions - Use of ADAblock" of the above cited article. Specifically, the "Set up ImageJ" and "Sorting Through The Data - List of output files" sections are also valid for the modified version. 
+            
             subprocess.run(f'C:/Users/machinelearning/Documents/Dottorato/INRiM/programmi/ImageJ/ImageJ.exe --console -macro C:/Users/machinelearning/Documents/Dottorato/INRiM/programmi/database_article/ADAblock_Chiara/ADAblock/ADAblock.ijm "{nome_FP} {InvRisoluzione} {indirizzo}analysis/ADAblock/"').returncode #modify accordingly
-
+            
             ADAb = f'{indirizzo}analysis/ADAblock/{nome}_FE_InvRisol={InvRisoluzione:.3f}_d={d:.3f}_l0={l0:.3f}/outputTD_horizontal.xls'
             df1 = pd.DataFrame()
             if os.path.isfile(ADAb):
