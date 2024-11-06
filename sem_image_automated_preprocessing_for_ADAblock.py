@@ -348,12 +348,64 @@ def image_resize(img, scale_percent):
     print('Resized Dimensions : ',resized.shape)
     return resized
 
+#############################################
+#Find edges \ developed by Stefano Carignano - stefano.carignano@bsc.es
+#############################################
+
+def find_squares(img):
+
+    #img = cv2.imread('shapes.jpg')
+    gray = img # cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    ret,thresh = cv2.threshold(gray,50,255,0)
+    contours,hierarchy = cv2.findContours(thresh, 1, 2)
+    print("Number of contours detected:", len(contours))
+
+    for cnt in contours:
+        x1,y1 = cnt[0][0]
+        approx = cv2.approxPolyDP(cnt, 0.01*cv2.arcLength(cnt, True), True)
+        if len(approx) == 4:
+            x, y, w, h = cv2.boundingRect(cnt)
+            ratio = float(w)/h
+            if ratio >= 0.9 and ratio <= 1.1:
+                img = cv2.drawContours(img, [cnt], -1, (0,255,255), 3)
+                cv2.putText(img, 'Square', (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)
+            else:
+                cv2.putText(img, 'Rectangle', (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                img = cv2.drawContours(img, [cnt], -1, (0,255,0), 3)
+
+    cv2.imshow("Shapes", img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+#############################################
+#PUF crop \ developed by Stefano Carignano & Chiara Magosso 
+#############################################
+ 
+def PUF_crop(in_fig, fancy=False):
+    #print(in_fig.shape[1])
+    if fancy:
+        squares = find_squares(in_fig)
+        cv2.drawContours(in_fig, squares, -1, (0, 255, 0), 3)
+        plt.show()
+        #raise NotImplementedError
+    elif in_fig.shape[1] == 2048:
+        return in_fig[500:-500,500:-500]
+    elif in_fig.shape[1] == 1024:
+        #plt.imshow(in_fig) ; plt.show()
+        #plt.imshow(in_fig[250:-250,250:-250]) ; plt.show()
+        return in_fig[240:-240,240:-240]
+    else:
+        print('Add case in function PUF_crop')
+        sys.exit(1)
+    
+
 ############################################################
 # MAIN
 ############################################################
 def main(): 
     indirizzo ="C:/Users/machinelearning/Desktop/gui_metadata/image_with_process_metadata/" #modify accordingly
-    cartelle = ['ADAblock', 'crop', 'Fingerprint-Enhancement', 'metadati', 'radial_mean', 'spettri', 'image_with_all_metadata']
+    cartelle = ['ADAblock', 'crop', 'PUF_matching_crop','Fingerprint-Enhancement', 'metadati', 'radial_mean', 'spettri', 'image_with_all_metadata']
     partial_database_process = pd.DataFrame()
     partial_database_python = pd.DataFrame()
     database_process = pd.DataFrame()
@@ -390,6 +442,9 @@ def main():
             crop_im = crop(im)
             plt.imsave(f'{indirizzo}analysis/crop/{nome}_crop.tif', crop_im, format='tiff', cmap='gray')
             
+            #crop_im = PUF_crop(crop_im, fancy=False) # activate only if you are doing PUF matching
+            #plt.imsave(f'{indirizzo}analysis/PUF_matching_crop/{nome}_crop.tif', crop_im, format='tiff', cmap='gray') # activate only if you are doing PUF matching
+
             print('Radial Mean')
             im_fft = fft(crop_im)
             plt.savefig(f'{indirizzo}analysis/spettri/{nome}_spectrum.png')
