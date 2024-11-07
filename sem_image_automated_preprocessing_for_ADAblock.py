@@ -531,10 +531,8 @@ def main():
                 partial_database_process = partial_database_process.append(df_process_param, ignore_index = True)
                     
                 partial_database = pd.concat([partial_database_process,partial_database_python], axis=1)
-                
-                writer = pd.ExcelWriter(f'{indirizzo}not_analyzed/image_with_some_metadata/partial_analisi_database.xlsx')
-                partial_database.to_excel(writer)
-                writer.save()
+
+                partial_database.to_csv(f'{indirizzo}not_analyzed/image_with_some_metadata/partial_analisi_database.csv', sep=';')
 
                 shutil.move(os.path.join(indirizzo, file), f'{indirizzo}not_analyzed')
                 continue
@@ -652,9 +650,7 @@ def main():
             database['Junctions4_Density_um']=((database['Pos_Junctions4']+database['Neg_Junctions4'])/database['Total_Area_nm']*1000000)
             database['Junctionsx_Density_um']=(0.5*(database['Pos_Junctionsx']+database['Neg_Junctionsx'])/database['Total_Area_nm']*1000000)
             
-            writer = pd.ExcelWriter(f'{indirizzo}analysis/database.xlsx')
-            database.to_excel(writer)
-            writer.save()
+            database.to_csv(f'{indirizzo}analysis/database.csv', sep=';')
 
             shutil.move(os.path.join(indirizzo, file), f'{indirizzo}done')
             plt.cla()
