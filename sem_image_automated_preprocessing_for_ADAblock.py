@@ -637,7 +637,7 @@ def main():
             database_process = database_process.append(df_process_param, ignore_index = True)
                     
             database = pd.concat([database_process,database_python,database_ADAblock], axis=1)
-            database['Molecular_weight_Copolimer_g_over_mol'] = database['Molecular_weight_BCP_A_g_over_mol']+database['Molecular_weight_BCP_B_g_over_mol']+database['Molecular_weight_BCP_B_g_over_mol']
+            database['Molecular_weight_Copolimer_g_over_mol'] = database['Molecular_weight_BCP_A_g_over_mol']+database['Molecular_weight_BCP_B_g_over_mol']+database['Molecular_weight_BCP_C_g_over_mol']
             database['scarto_percentuale'] = np.abs(100*((database['l0']-database['wfft_Period_nm'])/(database['l0']+database['wfft_Period_nm'])))
             #database = database.drop('Image_Name', axis=1)
             database['LER_su_d']= database['LER_sigma_avg_nm']/(database['d']*0.5)
@@ -650,6 +650,8 @@ def main():
             database['Junctions4_Density_um']=((database['Pos_Junctions4']+database['Neg_Junctions4'])/database['Total_Area_nm']*1000000)
             database['Junctionsx_Density_um']=(0.5*(database['Pos_Junctionsx']+database['Neg_Junctionsx'])/database['Total_Area_nm']*1000000)
             
+            database.rename(columns={"nm_per_pixel": "nm_over_pixel", "InvRisoluzione": "InvResolution", "LER_su_d": "LER_over_d","LWR_su_d": "LWR_over_d","scarto_percentuale": "relative_uncertainty"}, inplace=True)
+
             database.to_csv(f'{indirizzo}analysis/database.csv', sep=';')
 
             shutil.move(os.path.join(indirizzo, file), f'{indirizzo}done')
