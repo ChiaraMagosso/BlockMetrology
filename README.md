@@ -3,8 +3,7 @@
 This repository is part of the work 
 "Enabling data-driven design of block copolymer self-assembly"
 by Chiara Magosso, Irdi Murataj, Michele Perego, Gabriele Seguini, Debra J. Audus, Gianluca Milano,
-and Federico Ferrarese Lupi
-submitted for publication.
+and Federico Ferrarese Lupi, Scientific Data (2025), DOI: 10.1038/s41597-025-05379-w.
 
 The repository contains 3 files:
 - The file named Metadata_GUI.ipynb can be run on Google Colab and allows you to insert the process parameters in the Scanning Electron Microscope (SEM) images previously uploaded to a Google Drive folder.
